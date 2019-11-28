@@ -1,9 +1,36 @@
+
 var express = require('express');
-var router = express.Router();
-
+ var router = express.Router();
+ var connection = require('../conf/mysql.js');
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
-
+//用户注册
+router.post('/user',function(req,res){
+  var username=req.body.username;
+  var password=req.body.password;
+  console.log('账号：'+username);
+  if(username=='admin')
+    var role=1;
+  else
+    var role=2;
+    //sql=`insert into Info(username,password,role) values("${username}","${password}","${role}")`;
+    sql=`select * from user`;
+  connection.query(sql,function(err,result){
+    if(err){
+      res.status(401).send({
+        status:-1,
+        msg:'注册失败'
+      })
+    }else{
+      res.send({
+          status:1,
+          data:{
+            userId:result.insertId,
+            msg:"register successfully",
+            avatar:'',
+          }
+        })
+      }
+     
+  }) 
+})
 module.exports = router;

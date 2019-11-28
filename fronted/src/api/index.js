@@ -15,9 +15,6 @@ function apiAxios(method,url,params,response){
     http({
         method:method,
         url:url,
-        headers: {
-          Authorization: "Bearer " + store.state.token
-        },
         data:method === 'POST' || method === 'PUT' ? params : null,
         params: method === 'GET' || method ==='DELETE'? params :null,
     }).then(function(res){
