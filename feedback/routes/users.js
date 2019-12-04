@@ -12,14 +12,23 @@ router.post('/user',function(req,res){
     var role=1;
   else
     var role=2;
-    //sql=`insert into Info(username,password,role) values("${username}","${password}","${role}")`;
-    sql=`select * from user`;
+  sql=`insert into user(username,password,role) values("${username}","${password}","${role}")`;
+  //  sql=`select * from user`;
   connection.query(sql,function(err,result){
     if(err){
-      res.status(401).send({
-        status:-1,
-        msg:'注册失败'
-      })
+      console.log(err.errno);
+      if(err.errno==1062){
+        res.status(401).send({
+          status:-1,
+          msg:'用户名已被注册',
+        })
+      }
+      else{
+        res.status(401).send({
+          status:-1,
+          msg:'注册失败',
+        })
+      }
     }else{
       res.send({
           status:1,

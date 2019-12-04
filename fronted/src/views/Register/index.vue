@@ -20,18 +20,29 @@
       prefix-icon="el-icon-lock"
       v-model="loginForm.password" 
       show-password
-      size="9px"
-      @keyup.native.enter="Login()">
+      size="9px">
     </el-input>
     </el-form-item>
-    <el-button class="loginBtn" @click="Login()">登录</el-button>
+     <el-form-item prop="password_2">
+    <el-input style="margin-top:30px"
+      ref="password"
+      name="password"
+      placeholder="请再次输入密码" 
+      prefix-icon="el-icon-lock"
+      v-model="loginForm.password_2" 
+      show-password
+      size="9px"
+      @keyup.native.enter="SignIn()">
+    </el-input>
+    </el-form-item>
+    <el-button class="signInBtn" @click="SignIn()">登录</el-button>
     </el-form>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Login",
+  name: "SignIn",
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!value) {
@@ -47,6 +58,13 @@ export default {
         callback();
       }
     };
+     const validatePassword2 = (rule, value, callback) => {
+      if (value!=this.loginForm.password) {
+        callback(new Error("密码不一致"));
+      } else {
+        callback();
+      }
+    };
     return {
       loginForm: {
         username: "",
@@ -58,7 +76,10 @@ export default {
         ],
         password: [
           { required: true, trigger: "blur", validator: validatePassword }
-        ]
+        ],
+        password_2: [
+          { required: true, trigger: "blur", validator: validatePassword2 }
+        ],
       },
       passwordType: "password",
       redirect: undefined
@@ -83,8 +104,8 @@ export default {
         this.$refs.password.focus();
       });
     },
-    Login () {
-      if(this.loginForm.username==""||this.loginForm.password==""){
+    SignIn () {
+      if(this.loginForm.username==""||this.loginForm.password==""||this.loginForm.password_2==""){
         this.$message({ showClose: true , message: '请先完善信息！' , type: 'warning' });
         return
       }
@@ -93,9 +114,8 @@ export default {
         username: this.loginForm.username,
         password: this.loginForm.password
         },res=>{
-        // this.$store.dispatch("getNewToken", res.data.token);
-        // this.$router.push({ path: '/index' });
-        console.log(res);
+        this.$store.dispatch("getNewToken", res.data.token);
+        this.$router.push({ path: '/index' });
       }) 
     }
   }
